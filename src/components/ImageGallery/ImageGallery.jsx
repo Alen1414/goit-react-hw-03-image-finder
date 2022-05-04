@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
+import ErrorView from 'components/ErrorView';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
+import Loader from 'components/Loader/Loader';
+import imageAPI from 'components/Services/image-api';
 
 export default class ImageGallery extends Component {
   state = {
-    image: null,
+    image: {},
     error: null,
     status: 'idle',
   };
@@ -17,22 +21,14 @@ export default class ImageGallery extends Component {
       console.log('изменилось имя');
 
       this.setState({ status: 'pending' });
-      fetch(
-        `https://pixabay.com/api/?q=${nextName}&page=1&key=25348834-538d9f4405bc5a9c16273efde&image_type=photo&orientation=horizontal&per_page=12`
-      )
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
 
-          return Promise.reject(
-            new Error(`Нет картинки с названием ${nextName}`)
-          );
-        })
+      imageAPI
+        .fetchImage(nextName)
         .then(image => {
           this.setState({ image, status: 'resolved' });
         })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+        .catch(error => this.setState({ error, status: 'rejected' }))
+        .finally(() => this.setState({ loading: false }));
     }
     // console.log('prevProps.picturesName)', prevProps.picturesName);
     // console.log('this.props.picturesName', this.props.picturesName);
@@ -44,19 +40,16 @@ export default class ImageGallery extends Component {
       return <p>Введите название картинки</p>;
     }
     if (status === 'pending') {
-      return <p>Загружаем...</p>;
+      return <Loader />;
     }
     if (status === 'rejected') {
-      return <h1>{error.message}</h1>;
+      return <ErrorView message={error.message} />;
     }
     if (status === 'resolved') {
       return (
         <div>
-          <p>{image.name}</p>
           <ul className="gallery">
-            <li className="gallery-item">
-              <img src="" alt=""></img>
-            </li>
+            <ImageGalleryItem image={image} />
           </ul>
         </div>
       );
