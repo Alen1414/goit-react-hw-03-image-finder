@@ -1,9 +1,9 @@
 import css from './Loader.module.css';
-import { ImSpinner } from 'react-icons/im';
+import { BiSearchAlt2 } from 'react-icons/bi';
 function Loader() {
   return (
     <div role="alert" className={css.spinner}>
-      <ImSpinner size="50" />
+      <BiSearchAlt2 size="50" />
     </div>
   );
 }
