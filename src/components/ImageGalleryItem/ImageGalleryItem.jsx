@@ -1,15 +1,19 @@
-export default function ImageGalleryItem({
-  image: { webformatURL, largeImageURL, alt, hits, id },
-}) {
+import PropTypes from 'prop-types';
+import css from './ImageGalleryItem.module.css';
+
+function ImageGalleryItem({ description, smallImage, largeImage, openModal }) {
   return (
-    <li key={id} className="gallery-item">
-      <img src={webformatURL} alt={alt} largeImg={largeImageURL} />
+    <li className={css.item} onClick={openModal}>
+      <img src={smallImage} alt={description} data-large={largeImage} />
     </li>
   );
 }
 
-//  {hits.map(hit => (
-//                 <li key={hit.id} className="gallery-item">
-//                     <img src={hit.webformatURL} alt={hit.alt} largeImg={largeImageURL} />
-//                 </li>
-//             )
+ImageGalleryItem.prototype = {
+  description: PropTypes.string,
+  smallImage: PropTypes.string.isRequired,
+  largeImage: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
+};
+
+export default ImageGalleryItem;

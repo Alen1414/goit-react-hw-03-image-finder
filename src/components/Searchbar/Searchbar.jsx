@@ -1,49 +1,59 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import 'components/Style.css';
+import { FaSearch } from 'react-icons/fa';
+import css from './Searchbar.module.css';
 
-export default class Searchbar extends Component {
+class Searchbar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
-    searchPictures: '',
-  };
-  // сохраняем ввод
-  handleSearch = e => {
-    this.setState({ searchPictures: e.currentTarget.value.toLowerCase() });
-    // console.log(e.currentTarget.value.toLowerCase());
+    query: '',
   };
 
-  //очищаем форму
-  handSubmit = e => {
+  onChangeInput = e => {
+    this.setState({ query: e.currentTarget.value });
+  };
+
+  onSubmitForm = e => {
     e.preventDefault();
-    //при пустом вводе - алерт
-    if (this.state.searchPictures.trim() === '') {
-      return toast('Введите текст!');
-    }
-    // имя пропса который передали в App
-    this.props.onSubmit(this.state.searchPictures);
 
-    this.setState({ searchPictures: '' });
+    const { onSubmit } = this.props;
+    const { query } = this.state;
+
+    if (query.trim() === '') {
+      toast.error('Enter a search term.');
+      return;
+    }
+
+    onSubmit(query);
   };
 
   render() {
+    const { query } = this.state;
+
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handSubmit}>
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
+      <header className={css.header}>
+        <form className={css.form} onSubmit={this.onSubmitForm}>
+          <button className={css.button} type="submit">
+            <FaSearch size={12} />
           </button>
 
           <input
-            className="input"
+            className={css.input}
             type="text"
             autoComplete="off"
-            autoFocus=""
+            autoFocus
             placeholder="Search images and photos"
-            valet={this.state.searchPictures}
-            onChange={this.handleSearch}
+            value={query}
+            onChange={this.onChangeInput}
           />
         </form>
       </header>
     );
   }
 }
+
+export default Searchbar;

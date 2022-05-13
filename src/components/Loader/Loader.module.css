@@ -1,6 +1,6 @@
 .spinner {
-  margin-right: 10px;
-  animation: spiner 2s infinite liner;
+  margin-left: 50%;
+  animation: spiner 10s infinite liner;
   @keyframes spiner {
     0% {
       transform: rotate(0deg);
